@@ -1,7 +1,9 @@
-import { Injectable, inject, PLATFORM_ID, TransferState, makeStateKey } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID, TransferState, makeStateKey, Signal } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
-import { hc } from 'hono/client';
+import { hc, ClientResponse } from 'hono/client';
 import { app, AppType } from '../hono';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -42,4 +44,21 @@ export class ApiService {
   client = hc<AppType>('/', {
     fetch: this.customFetch as any
   });
+
+  run<T>(
+    promise: Promise<ClientResponse<T>>,
+    key: string
+  ): Signal<T | undefined> {
+    const stateKey = makeStateKey<T>(key);
+
+    // Attempt to read synchronous initial value from TransferState
+    const initialValue = this.transferState.get(stateKey, undefined);
+
+    // Convert promise to observable, unwrapping the text body
+    // Note: Assuming text response based on current usage. 
+    // Ideally this would be generic or accept a transform.
+    const observable$ = from(promise.then(res => res.text() as unknown as T));
+
+    return toSignal(observable$, { initialValue: initialValue as any }) as Signal<T | undefined>;
+  }
 }

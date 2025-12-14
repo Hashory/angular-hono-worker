@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { JsonPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { from } from 'rxjs';
 import { ApiService } from './api.service';
 
 @Component({
@@ -24,14 +23,8 @@ export class App {
 
   // Hono Client Data
   // Promise-based clients need an initial synchronous value from TransferState to prevent hydration flicker
-  protected readonly honoData = toSignal(
-    from(
-      this.api.client.hono
-        .$get({ query: { name: 'Visitor' } })
-        .then((res) => res.text())
-    ),
-    {
-      initialValue: this.transferState.get(makeStateKey<string>('/hono?name=Visitor'), '') as any
-    }
+  protected readonly honoData = this.api.run(
+    this.api.client.hono.$get({ query: { name: 'Visitor' } }),
+    '/hono?name=Visitor'
   );
 }
