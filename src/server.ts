@@ -1,14 +1,7 @@
 import { AngularAppEngine, createRequestHandler } from '@angular/ssr';
-import { Hono } from 'hono';
+import { app } from './hono';
 
 const angularApp = new AngularAppEngine();
-
-const app = new Hono();
-
-// Hono API Routes
-app.get('/hono', (c) => {
-	return c.text('Hello World from Hono!');
-});
 
 // Fallback to Angular SSR for all routes
 app.all('*', async (c) => {

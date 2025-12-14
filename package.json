@@ -35,9 +35,13 @@
 		"@angular/platform-server": "^21.0.0",
 		"@angular/router": "^21.0.0",
 		"@angular/ssr": "^21.0.1",
+		"@hono/standard-validator": "^0.2.0",
+		"@valibot/to-json-schema": "^1.5.0",
 		"hono": "^4.11.0",
+		"hono-openapi": "^1.1.2",
 		"rxjs": "~7.8.0",
-		"tslib": "^2.3.0"
+		"tslib": "^2.3.0",
+		"valibot": "^1.2.0"
 	},
 	"devDependencies": {
 		"@angular/build": "^21.0.1",
