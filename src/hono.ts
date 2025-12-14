@@ -11,7 +11,7 @@ const querySchema = v.object({
 
 const responseSchema = v.string()
 
-app.get(
+const honoRoute = app.get(
   '/hono',
   describeRoute({
     description: 'Say hello to the user',
@@ -46,3 +46,5 @@ app.get(
     },
   })
 )
+
+export type AppType = typeof honoRoute;
