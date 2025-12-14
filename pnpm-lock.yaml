@@ -32,6 +32,9 @@ importers:
       '@angular/ssr':
         specifier: ^21.0.1
         version: 21.0.3(@angular/common@21.0.4(@angular/core@21.0.4(@angular/compiler@21.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.4(@angular/compiler@21.0.4)(rxjs@7.8.2))(@angular/platform-server@21.0.4(@angular/common@21.0.4(@angular/core@21.0.4(@angular/compiler@21.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.0.4)(@angular/core@21.0.4(@angular/compiler@21.0.4)(rxjs@7.8.2))(@angular/platform-browser@21.0.4(@angular/common@21.0.4(@angular/core@21.0.4(@angular/compiler@21.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.4(@angular/compiler@21.0.4)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/router@21.0.4(@angular/common@21.0.4(@angular/core@21.0.4(@angular/compiler@21.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.4(@angular/compiler@21.0.4)(rxjs@7.8.2))(@angular/platform-browser@21.0.4(@angular/common@21.0.4(@angular/core@21.0.4(@angular/compiler@21.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.4(@angular/compiler@21.0.4)(rxjs@7.8.2)))(rxjs@7.8.2))
+      hono:
+        specifier: ^4.11.0
+        version: 4.11.0
       rxjs:
         specifier: ~7.8.0
         version: 7.8.2
@@ -2302,6 +2305,10 @@ packages:
   hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
+
+  hono@4.11.0:
+    resolution: {integrity: sha512-Jg8uZzN2ul8/qlyid5FO8O624F3AK0wKtkgoeEON1qBum1rM1itYBxoMKu/1SPJC7F1+xlIZsJMmc4HHhJ1AWg==}
+    engines: {node: '>=16.9.0'}
 
   hosted-git-info@9.0.2:
     resolution: {integrity: sha512-M422h7o/BR3rmCQ8UHi7cyyMqKltdP9Uo+J2fXK+RSAY+wTcKOIRyhTuKv4qn+DJf3g+PL890AzId5KZpX+CBg==}
@@ -5385,6 +5392,8 @@ snapshots:
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
+
+  hono@4.11.0: {}
 
   hosted-git-info@9.0.2:
     dependencies:

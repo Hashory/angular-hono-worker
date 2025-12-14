@@ -1,15 +1,34 @@
 import { AngularAppEngine, createRequestHandler } from '@angular/ssr';
+import { Hono } from 'hono';
 
 const angularApp = new AngularAppEngine();
+
+const app = new Hono();
+
+// Hono API Routes
+app.get('/hono', (c) => {
+	return c.text('Hello World from Hono!');
+});
+
+// Fallback to Angular SSR for all routes
+app.all('*', async (c) => {
+	// Pass the request to Angular
+	// c.req.raw is the standard Request object
+	const res = await angularApp.handle(c.req.raw);
+
+	// Return the Angular response, or 404 if Angular didn't handle it
+	return res || c.notFound();
+});
 
 /**
  * This is a request handler used by the Angular CLI (dev-server and during build).
  */
 export const reqHandler = createRequestHandler(async (req) => {
-	const res = await angularApp.handle(req);
-
-	return res ?? new Response('Page not found.', { status: 404 });
+	// Delegate to Hono to handle routing (both API and Angular pages)
+	return app.fetch(req);
 });
 
-
-export default { fetch: reqHandler };
+// Export default for Cloudflare Workers
+export default {
+	fetch: (req: Request, env: any, ctx: any) => app.fetch(req, env, ctx)
+};
