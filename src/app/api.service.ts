@@ -1,7 +1,8 @@
 import { Injectable, inject, PLATFORM_ID, TransferState, makeStateKey, Signal } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { hc, ClientResponse } from 'hono/client';
-import { app, AppType } from '../hono';
+import type { AppType } from '../hono';
+import { HONO_FETCH } from './tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { from } from 'rxjs';
 
@@ -11,6 +12,8 @@ import { from } from 'rxjs';
 export class ApiService {
   private platformId = inject(PLATFORM_ID);
   private transferState = inject(TransferState);
+
+  private honoFetch = inject(HONO_FETCH);
 
   private customFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     // Generate a key based on the URL
@@ -25,11 +28,11 @@ export class ApiService {
         return new Response(cachedBody, { status: 200 });
       }
       // Fallback to standard network fetch
-      return fetch(input, init);
+      return this.honoFetch(input, init);
     }
 
-    // [Server] Execute request via internal Hono app
-    const response = await app.request(input, init);
+    // [Server] Execute request via injected fetch
+    const response = await this.honoFetch(input, init);
 
     // Cache successful responses
     if (response.ok) {

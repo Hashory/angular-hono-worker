@@ -23,6 +23,8 @@ export class App {
 
   // Hono Client Data
   // Promise-based clients need an initial synchronous value from TransferState to prevent hydration flicker
+  // TODO: Investigate the implementation to make it similar to HttpClient (instead of using a mysterious ID).
+  // TODO: Also, investigate Signal-based HttpClient implementations, as they should be available soon.
   protected readonly honoData = this.api.run(
     this.api.client.hono.$get({ query: { name: 'Visitor' } }),
     '/hono?name=Visitor'
