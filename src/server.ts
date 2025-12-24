@@ -1,5 +1,5 @@
 import { AngularAppEngine, createRequestHandler } from '@angular/ssr';
-import { app } from './hono';
+import { app } from './api';
 
 const angularApp = new AngularAppEngine();
 

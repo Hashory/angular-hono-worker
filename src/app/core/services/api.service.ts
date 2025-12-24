@@ -1,8 +1,8 @@
 import { Injectable, inject, PLATFORM_ID, TransferState, makeStateKey } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { hc, ClientResponse } from 'hono/client';
-import type { AppType } from '../hono';
-import { HONO_FETCH } from './tokens';
+import type { AppType } from '../../../api';
+import { HONO_FETCH } from '../tokens';
 
 
 @Injectable({

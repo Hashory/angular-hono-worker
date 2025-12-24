@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { HONO_FETCH } from './tokens';
+import { HONO_FETCH } from './core/tokens';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideHttpClient(withFetch()),
