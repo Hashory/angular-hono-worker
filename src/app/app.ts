@@ -1,4 +1,4 @@
-import { Component, signal, inject, TransferState, makeStateKey } from '@angular/core';
+import { Component, signal, inject, resource } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { JsonPipe } from '@angular/common';
@@ -16,17 +16,12 @@ export class App {
 
   private http = inject(HttpClient);
   private api = inject(ApiService);
-  private transferState = inject(TransferState);
 
   // This data fetching is also executed during SSR (on Cloudflare Worker)
   protected readonly todoData = toSignal(this.http.get('https://jsonplaceholder.typicode.com/todos/1'));
 
-  // Hono Client Data
-  // Promise-based clients need an initial synchronous value from TransferState to prevent hydration flicker
-  // TODO: Investigate the implementation to make it similar to HttpClient (instead of using a mysterious ID).
-  // TODO: Also, investigate Signal-based HttpClient implementations, as they should be available soon.
-  protected readonly honoData = this.api.run(
-    this.api.client.hono.$get({ query: { name: 'Visitor' } }),
-    '/hono?name=Visitor'
-  );
+  protected readonly honoData = resource({
+    defaultValue: this.api.getCached<any>('/hono?name=Visitor') as any,
+    loader: () => this.api.client.hono.$get({ query: { name: 'Visitor' } }).then(res => res.text())
+  });
 }
