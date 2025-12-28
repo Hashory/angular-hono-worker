@@ -2,8 +2,6 @@ import { Hono } from 'hono'
 import { describeRoute, resolver, validator } from 'hono-openapi'
 import * as v from 'valibot'
 
-export const users = new Hono()
-
 const userSchema = v.object({
   id: v.number(),
   name: v.string(),
@@ -12,53 +10,54 @@ const userSchema = v.object({
 
 const usersResponseSchema = v.array(userSchema)
 
-users.get(
-  '/',
-  describeRoute({
-    description: 'Get all users',
-    responses: {
-      200: {
-        description: 'Successful response',
-        content: {
-          'application/json': { schema: resolver(usersResponseSchema) },
-        },
-      },
-    },
-  }),
-  (c) => {
-    return c.json([
-      { id: 1, name: 'John Doe', email: 'john@example.com' },
-      { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-    ])
-  }
-)
-
 const userIdParamSchema = v.object({
   id: v.pipe(v.string(), v.transform(Number)),
 })
 
-users.get(
-  '/:id',
-  describeRoute({
-    description: 'Get user by ID',
-    responses: {
-      200: {
-        description: 'Successful response',
-        content: {
-          'application/json': { schema: resolver(userSchema) },
+export const users = new Hono()
+  .get(
+    '/',
+    describeRoute({
+      description: 'Get all users',
+      responses: {
+        200: {
+          description: 'Successful response',
+          content: {
+            'application/json': { schema: resolver(usersResponseSchema) },
+          },
         },
       },
-      404: {
-        description: 'User not found',
-      },
-    },
-  }),
-  validator('param', userIdParamSchema),
-  (c) => {
-    const { id } = c.req.valid('param')
-    if (id === 1) {
-      return c.json({ id: 1, name: 'John Doe', email: 'john@example.com' })
+    }),
+    (c) => {
+      return c.json([
+        { id: 1, name: 'John Doe', email: 'john@example.com' },
+        { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+      ])
     }
-    return c.json({ error: 'User not found' }, 404)
-  }
-)
+  )
+  .get(
+    '/:id',
+    describeRoute({
+      description: 'Get user by ID',
+      responses: {
+        200: {
+          description: 'Successful response',
+          content: {
+            'application/json': { schema: resolver(userSchema) },
+          },
+        },
+        404: {
+          description: 'User not found',
+        },
+      },
+    }),
+    validator('param', userIdParamSchema),
+    (c) => {
+      const { id } = c.req.valid('param')
+      if (id === 1) {
+        return c.json({ id: 1, name: 'John Doe', email: 'john@example.com' })
+      }
+      return c.json({ error: 'User not found' }, 404)
+    }
+  )
+

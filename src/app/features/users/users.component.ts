@@ -36,8 +36,7 @@ export class UsersComponent {
   protected readonly users = resource({
     defaultValue: this.api.getCached<any[]>('/users') || [],
     loader: async () => {
-      const client = this.api.client as any;
-      const res = await client.users.$get();
+      const res = await this.api.users.$get();
       return res.json();
     }
   });

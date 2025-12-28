@@ -39,8 +39,7 @@ export class PostsComponent {
   protected readonly posts = resource({
     defaultValue: this.api.getCached<any[]>('/posts') || [],
     loader: async () => {
-      const client = this.api.client as any;
-      const res = await client.posts.$get();
+      const res = await this.api.posts.$get();
       return res.json();
     }
   });

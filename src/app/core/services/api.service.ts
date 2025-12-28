@@ -3,6 +3,14 @@ import { isPlatformServer } from '@angular/common';
 import { hc } from 'hono/client';
 import type { AppType } from '../../../api';
 
+type HonoClient = ReturnType<typeof hc<AppType>>;
+
+/**
+ * Interface merging to allow direct access to RPC routes on ApiService.
+ * e.g., apiService.users.$get() instead of apiService.client.users.$get()
+ */
+export interface ApiService extends HonoClient { }
+
 /**
  * Base class for handling Hono RPC requests.
  * The default implementation uses the browser's fetch API.
@@ -57,9 +65,21 @@ export class ApiService {
     return response;
   }
 
-  client = hc<AppType>('/api', {
-    fetch: this.customFetch as any
+  #client = hc<AppType>('/api', {
+    fetch: this.customFetch
   });
+
+  constructor() {
+    const client = this.#client;
+    return new Proxy(this, {
+      get(target, prop, receiver) {
+        if (prop in target) {
+          return (target as any)[prop];
+        }
+        return (client as any)[prop];
+      }
+    });
+  }
 
   getCached<T>(url: string): T | undefined {
     const key = makeStateKey<string>(url);
