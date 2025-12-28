@@ -1,12 +1,13 @@
 import { Component, signal, inject, resource } from '@angular/core';
 import { JsonPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../core/services/api.service';
 
 @Component({
   selector: 'app-home',
-  imports: [JsonPipe],
+  imports: [JsonPipe, RouterLink],
   template: `
     <div class="card">
       <h2>SSR Data Test (Angular HttpClient)</h2>
@@ -17,7 +18,16 @@ import { ApiService } from '../../core/services/api.service';
     <div class="card">
       <h2>Hono Client Data Test</h2>
       <p>Data fetched from Hono (Worker):</p>
-      <pre><code>{{ honoData.value() }}</code></pre>
+      <pre><code>{{ honoData.value() | json }}</code></pre>
+    </div>
+
+    <div class="card">
+      <h2>Navigation Links</h2>
+      <p>Go to other demo pages:</p>
+      <ul>
+        <li><a routerLink="/users">View Users</a></li>
+        <li><a routerLink="/posts">View Posts</a></li>
+      </ul>
     </div>
   `,
   styles: [`
@@ -61,7 +71,11 @@ export class Home {
   protected readonly todoData = toSignal(this.http.get('https://jsonplaceholder.typicode.com/todos/1'));
 
   protected readonly honoData = resource({
-    defaultValue: this.api.getCached<any>('/hono?name=Visitor') as any,
-    loader: () => this.api.client.hono.$get({ query: { name: 'Visitor' } }).then(res => res.text())
+    defaultValue: this.api.getCached<any>('/api/users') as any,
+    loader: async () => {
+      const client = this.api.client as any;
+      const res = await client.users.$get();
+      return res.json();
+    }
   });
 }

@@ -2,17 +2,15 @@ import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
 import { provideServerRendering, withRoutes } from '@angular/ssr';
 import { appConfig } from './app.config';
 import { serverRoutes } from './app.routes.server';
-import { HONO_FETCH } from './core/tokens';
-import { app } from '../api';
+import { HonoRequestHandler } from './core/services/api.service';
+import { ServerHonoRequestHandler } from './core/services/api.service.server';
 
 const serverConfig: ApplicationConfig = {
   providers: [
     provideServerRendering(withRoutes(serverRoutes)),
     {
-      provide: HONO_FETCH,
-      useValue: async (input: RequestInfo | URL, init?: RequestInit) => {
-        return app.request(input.toString(), init);
-      }
+      provide: HonoRequestHandler,
+      useClass: ServerHonoRequestHandler
     }
   ]
 };

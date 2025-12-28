@@ -1,50 +1,32 @@
 import { Hono } from 'hono';
-import { describeRoute, resolver, validator } from 'hono-openapi'
-import * as v from 'valibot'
 import { openAPIRouteHandler } from 'hono-openapi'
+import { users } from './routes/users'
+import { posts } from './routes/posts'
 
-export const app = new Hono();
+const api = new Hono();
 
-const querySchema = v.object({
-  name: v.optional(v.string()),
-})
+// Mount routes to sub-router
+const routes = api
+  .route('/users', users)
+  .route('/posts', posts)
 
-const responseSchema = v.string()
-
-const honoRoute = app.get(
-  '/hono',
-  describeRoute({
-    description: 'Say hello to the user',
-    responses: {
-      200: {
-        description: 'Successful response',
-        content: {
-          'text/plain': { schema: resolver(responseSchema) },
-        },
-      },
-    },
-  }),
-  validator('query', querySchema),
-  (c) => {
-    const query = c.req.valid('query')
-    return c.text(`Hello ${query?.name ?? 'Hono'}!`)
-  }
-)
-
-app.get(
+// API-level OpenAPI
+api.get(
   '/openapi',
-  openAPIRouteHandler(app, {
+  openAPIRouteHandler(api, {
     documentation: {
       info: {
         title: 'Hono API',
         version: '1.0.0',
-        description: 'Greeting API',
+        description: 'Demo API for Angular + Hono',
       },
       servers: [
-        { url: 'http://localhost:4200', description: 'Local Server' },
+        { url: 'http://localhost:4200/api', description: 'Local API Server' },
       ],
     },
   })
 )
 
-export type AppType = typeof honoRoute;
+export const app = new Hono().route('/api', routes);
+
+export type AppType = typeof routes;
