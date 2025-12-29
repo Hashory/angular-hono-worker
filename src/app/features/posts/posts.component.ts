@@ -34,12 +34,12 @@ import { ApiService } from '../../core/services/api.service';
   `]
 })
 export class PostsComponent {
-  private api = inject(ApiService);
+  #api = inject(ApiService);
 
   protected readonly posts = resource({
-    defaultValue: this.api.getCached<any[]>('/posts') || [],
+    defaultValue: this.#api.getCached<any[]>('/posts') || [],
     loader: async () => {
-      const res = await this.api.posts.$get();
+      const res = await this.#api.posts.$get();
       return res.json();
     }
   });

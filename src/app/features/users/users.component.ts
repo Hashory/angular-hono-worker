@@ -31,12 +31,12 @@ import { ApiService } from '../../core/services/api.service';
   `]
 })
 export class UsersComponent {
-  private api = inject(ApiService);
+  #api = inject(ApiService);
 
   protected readonly users = resource({
-    defaultValue: this.api.getCached<any[]>('/users') || [],
+    defaultValue: this.#api.getCached<any[]>('/users') || [],
     loader: async () => {
-      const res = await this.api.users.$get();
+      const res = await this.#api.users.$get();
       return res.json();
     }
   });

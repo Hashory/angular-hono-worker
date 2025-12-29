@@ -64,16 +64,16 @@ import { ApiService } from '../../core/services/api.service';
 export class Home {
   protected readonly title = signal('angular-hono-worker');
 
-  private http = inject(HttpClient);
-  private api = inject(ApiService);
+  #http = inject(HttpClient);
+  #api = inject(ApiService);
 
   // This data fetching is also executed during SSR (on Cloudflare Worker)
-  protected readonly todoData = toSignal(this.http.get('https://jsonplaceholder.typicode.com/todos/1'));
+  protected readonly todoData = toSignal(this.#http.get('https://jsonplaceholder.typicode.com/todos/1'));
 
   protected readonly honoData = resource({
-    defaultValue: this.api.getCached<any>('/api/users') as any,
+    defaultValue: this.#api.getCached<any>('/api/users') as any,
     loader: async () => {
-      const res = await this.api.users.$get();
+      const res = await this.#api.users.$get();
       return res.json();
     }
   });
