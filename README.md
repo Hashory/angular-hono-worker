@@ -1,59 +1,71 @@
-# AngularHonoWorker
+# Angular + Hono + Cloudflare Workers
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.1.
+This project is a modern boilerplate integrating **Angular 21** and **Hono 4**, optimized for deployment as a **Cloudflare Worker**.
 
-## Development server
+## Architecture Overview
 
-To start a local development server, run:
+Hono serves as the main entry point and handles:
+1. **API Routes**: All requests under `/api` are handled by Hono.
+2. **OpenAPI**: Automatic documentation generation using `hono-openapi`.
+3. **Angular SSR**: All other routes are delegated to the `AngularAppEngine` for Server-Side Rendering.
 
-```bash
-ng serve
-```
+## Key Features
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- 🚀 **Angular 21**: Latest features and performance.
+- 🔥 **Hono 4**: Lightweight, fast, and extensible web framework.
+- ☁️ **Cloudflare Workers**: Edge-first deployment.
+- 📝 **OpenAPI Documentation**: Interactive API spec at `/api/openapi`.
+- ✅ **Type-safe Validation**: Powered by `valibot`.
+- 🧪 **Vitest**: Fast unit testing.
 
-## Code scaffolding
+## Getting Started
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Prerequisites
 
-```bash
-ng generate component component-name
-```
+- [Node.js](https://nodejs.org/) (Latest LTS)
+- [pnpm](https://pnpm.io/)
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### Installation
 
 ```bash
-ng build
+pnpm install
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Development
 
-## Running unit tests
+To start the Angular development server (client-side only):
+```bash
+pnpm start
+```
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### Preview (Full Integration)
+
+To test the full integration (Hono + Angular SSR + Cloudflare Worker environment) locally:
+```bash
+pnpm run preview
+```
+This runs `wrangler dev` against the built artifacts.
+
+## API Usage
+
+API routes are defined in `src/api/routes`.
+
+- **Users**: `/api/users`
+- **Posts**: `/api/posts`
+- **OpenAPI Spec**: `/api/openapi`
+
+Type-safe client generation is supported via Hono's `AppType`.
+
+## Deployment
+
+Deploy to Cloudflare Workers using Wrangler:
 
 ```bash
-ng test
+pnpm run deploy
 ```
 
-## Running end-to-end tests
+## Related Commands
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- `pnpm run build`: Build both browser and server artifacts.
+- `pnpm run test`: Run unit tests with Vitest.
+- `pnpm run cf-typegen`: Generate Cloudflare Worker types from `wrangler.jsonc`.
