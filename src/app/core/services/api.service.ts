@@ -9,7 +9,7 @@ type HonoClient = ReturnType<typeof hc<AppType>>;
  * Interface merging to allow direct access to RPC routes on ApiService.
  * e.g., apiService.users.$get() instead of apiService.client.users.$get()
  */
-export interface ApiService extends HonoClient { }
+export interface ApiService extends HonoClient {}
 
 /**
  * Base class for handling Hono RPC requests.
@@ -17,7 +17,7 @@ export interface ApiService extends HonoClient { }
  * This is overridden in the server-side configuration.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HonoRequestHandler {
   async fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
@@ -27,7 +27,7 @@ export class HonoRequestHandler {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
   #platformId = inject(PLATFORM_ID);
@@ -63,10 +63,10 @@ export class ApiService {
     }
 
     return response;
-  }
+  };
 
   #client = hc<AppType>('/api', {
-    fetch: this.#customFetch
+    fetch: this.#customFetch,
   });
 
   constructor() {
@@ -74,10 +74,14 @@ export class ApiService {
     return new Proxy(this, {
       get(target, prop, receiver) {
         if (prop in target) {
-          return (target as any)[prop];
+          const value = (target as any)[prop];
+          if (typeof value === 'function') {
+            return value.bind(target);
+          }
+          return value;
         }
         return (client as any)[prop];
-      }
+      },
     });
   }
 
