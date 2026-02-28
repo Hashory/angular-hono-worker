@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, REQUEST_CONTEXT } from '@angular/core';
 import { HonoRequestHandler } from './api.service';
 import { app } from '../../../api';
 
@@ -9,8 +9,17 @@ import { app } from '../../../api';
  */
 @Injectable()
 export class ServerHonoRequestHandler extends HonoRequestHandler {
+  #requestContext = inject(REQUEST_CONTEXT);
+
   override async fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
     console.log(`[ServerHonoRequestHandler] Executing internal request: ${input}`);
-    return app.request(input.toString(), init);
+
+    // @ts-ignore
+    const env = this.#requestContext?.env;
+    console.log(`requestContext: ${this.#requestContext}`);
+    console.log(`env: ${env}`);
+    console.log(`env-HELLO: ${env.HELLO}`);
+
+    return app.request(input.toString() + '?abc=123', init, env);
   }
 }

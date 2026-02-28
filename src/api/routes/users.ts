@@ -1,18 +1,18 @@
-import { Hono } from 'hono'
-import { describeRoute, resolver, validator } from 'hono-openapi'
-import * as v from 'valibot'
+import { Hono } from 'hono';
+import { describeRoute, resolver, validator } from 'hono-openapi';
+import * as v from 'valibot';
 
 const userSchema = v.object({
   id: v.number(),
   name: v.string(),
   email: v.string(),
-})
+});
 
-const usersResponseSchema = v.array(userSchema)
+const usersResponseSchema = v.array(userSchema);
 
 const userIdParamSchema = v.object({
   id: v.pipe(v.string(), v.transform(Number)),
-})
+});
 
 export const users = new Hono()
   .get(
@@ -29,11 +29,18 @@ export const users = new Hono()
       },
     }),
     (c) => {
+      console.log(`---`);
+      // @ts-ignore
+      console.log(`abc: ${c.req.query('abc')}`);
+      console.log(`env: ${c.env == undefined ? 'undefined' : 'defined'}`);
+      // @ts-ignore
+      console.log(`env: ${c.env.HELLO}`);
+      console.log(`---`);
       return c.json([
         { id: 1, name: 'John Doe', email: 'john@example.com' },
         { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-      ])
-    }
+      ]);
+    },
   )
   .get(
     '/:id',
@@ -53,11 +60,12 @@ export const users = new Hono()
     }),
     validator('param', userIdParamSchema),
     (c) => {
-      const { id } = c.req.valid('param')
+      // @ts-ignore
+      console.log(c.env.HELLO);
+      const { id } = c.req.valid('param');
       if (id === 1) {
-        return c.json({ id: 1, name: 'John Doe', email: 'john@example.com' })
+        return c.json({ id: 1, name: 'John Doe', email: 'john@example.com' });
       }
-      return c.json({ error: 'User not found' }, 404)
-    }
-  )
-
+      return c.json({ error: 'User not found' }, 404);
+    },
+  );
